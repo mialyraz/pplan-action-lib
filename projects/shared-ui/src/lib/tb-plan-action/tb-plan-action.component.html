@@ -1,0 +1,123 @@
+<div class="pa-container">
+
+  <!-- HEADER -->
+  <div class="pa-header">
+
+    <button class="btn btn-outline-primary"
+            (click)="back.emit()">
+      ← Retour
+    </button>
+
+    <div class="pa-title">
+      Action du checkpoint {{ checkpoint?.idqualite }} -
+      {{ checkpoint?.description }}
+    </div>
+
+    <input type="text"
+           class="form-control pa-search"
+           placeholder="Recherche..."
+           [(ngModel)]="searchText"
+           (input)="searchChange.emit(searchText)">
+  </div>
+
+  <!-- KPI DASHBOARD -->
+  <div class="pa-dashboard">
+
+    <div class="pa-card"
+         [class.active]="selectedKPI === 'all'"
+         (click)="kpiChange.emit('all')">
+      <h4>Tous les sujets</h4>
+      <div class="value">{{ stats?.nbrSujet }}</div>
+    </div>
+
+    <div class="pa-card"
+         [class.active]="selectedKPI === 'sansAction'"
+         (click)="kpiChange.emit('sansAction')">
+      <h4>Sujet sans action</h4>
+      <div class="value text-warning">
+        {{ stats?.nbrSujetSansAction }}
+      </div>
+    </div>
+
+    <div class="pa-card"
+         [class.active]="selectedKPI === 'cloturees'"
+         (click)="kpiChange.emit('cloturees')">
+      <h4>Clôturées</h4>
+      <div class="value text-success">
+        {{ stats?.nbrTermines }}
+      </div>
+    </div>
+
+    <div class="pa-card"
+         [class.active]="selectedKPI === 'retard'"
+         (click)="kpiChange.emit('retard')">
+      <h4>En retard</h4>
+      <div class="value text-danger">
+        {{ stats?.nbrRetards }}
+      </div>
+    </div>
+
+    <div class="pa-card">
+      <h4>Taux global</h4>
+      <div class="value">
+        {{ stats?.tauxGlobal }} %
+      </div>
+    </div>
+
+  </div>
+
+  <!-- LISTE PLAN ACTION -->
+  <div *ngFor="let pa of planActions; let i = index"
+       class="pa-item">
+
+    <div class="pa-item-header">
+
+      <span class="fw-bold">
+        PA / Sujet #{{ i + 1 }}
+      </span>
+
+      <div class="pa-badges">
+        <span class="badge bg-primary">
+          🗂 {{ pa.nbActionsOuvertes || 0 }}
+        </span>
+
+        <span class="badge bg-success">
+          ✅ {{ pa.nbrTermines || 0 }}
+        </span>
+      </div>
+
+      <div class="pa-donut"
+           [style.--percent]="pa.tauxAvancement || 0">
+        <div class="center">
+          {{ pa.tauxAvancement || 0 }}%
+        </div>
+      </div>
+
+      <div class="pa-actions">
+        <button class="btn btn-sm btn-success"
+                (click)="openFac.emit(pa)">
+          Voir FAC
+        </button>
+
+        <button class="btn btn-sm btn-danger"
+                (click)="delete.emit(pa)">
+          Supprimer
+        </button>
+      </div>
+    </div>
+
+    <div class="pa-item-body">
+      <textarea class="form-control"
+                [(ngModel)]="pa.sujet"
+                (blur)="save.emit(pa)"
+                rows="2">
+      </textarea>
+    </div>
+  </div>
+
+  <button class="btn btn-success mt-3"
+          (click)="add.emit()">
+    + Ajouter un sujet
+  </button>
+
+</div>
